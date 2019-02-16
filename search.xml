@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[重新起航]]></title>
     <url>%2F2019%2F02%2F16%2F%E9%87%8D%E6%96%B0%E8%B5%B7%E8%88%AA%2F</url>
-    <content type="text"><![CDATA[​ 我是个码农，却假装是个程序员，不在浮沙筑高台，不为繁华易匠心，是我的追求，今天是2019年情人节的第二天，我想重新起航。]]></content>
+    <content type="text"><![CDATA[​ 我是个码农，却假装是个程序员，不在浮沙筑高台，不为繁华易匠心，是我的追求，今天是2019年情人节的第二天，我想重新起航。 12345#include &lt;stdio.h&gt;int main(void)&#123; printf("Hello world\n");&#125;]]></content>
       <categories>
         <category>个人随笔</category>
       </categories>
