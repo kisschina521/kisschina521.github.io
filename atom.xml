@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://kisschina521.github.io/"/>
-  <updated>2019-02-16T07:11:07.395Z</updated>
+  <updated>2019-02-18T14:55:08.560Z</updated>
   <id>https://kisschina521.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>二级指针和字符串数组和命令行参数</title>
+    <link href="https://kisschina521.github.io/2019/02/18/%E4%BA%8C%E7%BA%A7%E6%8C%87%E9%92%88%E5%92%8C%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%95%B0%E7%BB%84%E5%92%8C%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0/"/>
+    <id>https://kisschina521.github.io/2019/02/18/二级指针和字符串数组和命令行参数/</id>
+    <published>2019-02-18T09:04:32.000Z</published>
+    <updated>2019-02-18T14:55:08.560Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="二维数组"><a href="#二维数组" class="headerlink" title="二维数组"></a>二维数组</h3><p>先看以下代码：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">int main()&#123;</span><br><span class="line">    int ar[10] = &#123;12,23,34,56&#125;;</span><br><span class="line">    sizeof(ar);</span><br><span class="line">    int (&amp;br) [10] = ar;</span><br><span class="line">    int (*p) [10] = &amp;ar;</span><br><span class="line">    </span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>以上三种情况中，数组名都代表数组的类型和大小，在以外的情况中，ar代表首元素的地址，<code>int (&amp;br)[10]</code>代表br是数组ar的一个引用，编译器是这样解释的，br是一个引用，是一个数组类型的引用，数组大小是10，如果不加括号，就会这样解释，开辟十个引用空间，这显然是不合理的，<code>int(*p)[10]</code>也是同样的道理，p是一个指向数组的指针，数组里面有两个属性，一个是存放的类型，一个是数组的大小，在编译时都必须给定。</p><p>除了以上三种情况，数组名都是首元素的地址，他退化成一个指针，并且是一个常性指针，不可以被赋值。</p><p>s与p的差别：</p><p>下面来说说这种<code>int*s[10]</code>这种表示s是一个数组，里面存放了10个int型指针，也就是说对于p来说他开辟4个空间，<code>*p</code>开辟40个空间，对于s来说他开辟40个空间，里面每个元素代表了一个指针，更通俗点来说，p是一个指针，s是一个数组名</p><p>下面来看看图示：</p><p>！[s与p的差别][/二级指针和字符串数组和命令行参数/test1.png]</p><p>有了上面的铺垫，我们来正是探讨二维数组：</p><p><img src="/二级指针和字符串数组和命令行参数/test2.png" alt></p><p>如果要给ar3的第二个元素赋值<code>*(*(p+2)+1)</code>，相当于<code>p[2][1]</code>，也是相当于这么写<code>*(p[2]+1)</code></p><p> 现在我们再来看一个例子，这个就有点混了，我尽力向大家解释这个东西</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ar[<span class="number">3</span>][<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">sizeof</span>(ar);<span class="comment">//48</span></span><br><span class="line">    <span class="keyword">int</span> (&amp;br) [<span class="number">3</span>][<span class="number">4</span>] = ar;</span><br><span class="line">    <span class="keyword">int</span> (*p) [<span class="number">3</span>][<span class="number">4</span>] = &amp;ar;<span class="comment">//p+1加48个字节</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> (*s) [<span class="number">4</span>] = ar;<span class="comment">//ar+1，加一个数组的大小</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>最开始的三种情况就回到了我们最开始讨论的那三个情况，ar代表了数组的类型和大小，第4个ar代表了数组的首元素的地址，对于一个二维数组来说，他的首元素代表的就是一个一维数组，所以s+1指向了ar[1]，我们去看汇编源码的时候可以清楚的看到，二维数组也是由一维数组构造的。 ，同理，三维数组也是由二维数组组成的，。</p><p>现在我们来测试一个例子，来看看大家到底有没有理解这块的知识：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ar[<span class="number">5</span>][<span class="number">2</span>] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>&#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span>(*p)[<span class="number">2</span>] = &amp;ar[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> *s = ar[<span class="number">1</span>];</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d %d\n"</span>,p[<span class="number">1</span>][<span class="number">3</span>],s[<span class="number">3</span>]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>打印结果会是多少呢？</p><p><code>8,6</code></p><p>因为p是指向一个二维数组第二个元素的地址，所以<code>p[1][3]</code>相当于<code>*((*p+1)+3)</code>，s这个呢相当于<code>*s+3</code>加了3个空间。</p><h3 id="字符数组"><a href="#字符数组" class="headerlink" title="字符数组"></a>字符数组</h3>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h3 id=&quot;二维数组&quot;&gt;&lt;a href=&quot;#二维数组&quot; class=&quot;headerlink&quot; title=&quot;二维数组&quot;&gt;&lt;/a&gt;二维数组&lt;/h3&gt;&lt;p&gt;先看以下代码：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td cla
+      
+    
+    </summary>
+    
+      <category term="C/C++" scheme="https://kisschina521.github.io/categories/C-C/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>重新起航</title>
