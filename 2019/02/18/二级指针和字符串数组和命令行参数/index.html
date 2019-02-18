@@ -110,12 +110,13 @@
 <meta property="og:site_name" content="Celtics_Super_Fan">
 <meta property="og:description" content="二维数组先看以下代码： 123456789#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;    int ar[10] = &amp;#123;12,23,34,56&amp;#125;;    sizeof(ar);    int (&amp;amp;br) [10] = ar;    int (*p) [10] = &amp;amp;ar;        return 0;&amp;#125; 以上三">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://kisschina521.github.io/2019/02/18/二级指针和字符串数组和命令行参数/test1.png">
 <meta property="og:image" content="https://kisschina521.github.io/2019/02/18/二级指针和字符串数组和命令行参数/test2.png">
-<meta property="og:updated_time" content="2019-02-18T14:58:16.146Z">
+<meta property="og:updated_time" content="2019-02-18T15:00:49.781Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="二级指针和字符串数组和命令行参数">
 <meta name="twitter:description" content="二维数组先看以下代码： 123456789#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;    int ar[10] = &amp;#123;12,23,34,56&amp;#125;;    sizeof(ar);    int (&amp;amp;br) [10] = ar;    int (*p) [10] = &amp;amp;ar;        return 0;&amp;#125; 以上三">
-<meta name="twitter:image" content="https://kisschina521.github.io/2019/02/18/二级指针和字符串数组和命令行参数/test2.png">
+<meta name="twitter:image" content="https://kisschina521.github.io/2019/02/18/二级指针和字符串数组和命令行参数/test1.png">
 
 
 
@@ -414,7 +415,7 @@
                 
               
 
-              <time title="创建时间：2019-02-18 17:04:32 / 修改时间：22:58:16" itemprop="dateCreated datePublished" datetime="2019-02-18T17:04:32+08:00">2019-02-18</time>
+              <time title="创建时间：2019-02-18 17:04:32 / 修改时间：23:00:49" itemprop="dateCreated datePublished" datetime="2019-02-18T17:04:32+08:00">2019-02-18</time>
             
 
             
@@ -506,7 +507,7 @@
 <p>s与p的差别：</p>
 <p>下面来说说这种<code>int*s[10]</code>这种表示s是一个数组，里面存放了10个int型指针，也就是说对于p来说他开辟4个空间，<code>*p</code>开辟40个空间，对于s来说他开辟40个空间，里面每个元素代表了一个指针，更通俗点来说，p是一个指针，s是一个数组名</p>
 <p>下面来看看图示：</p>
-<p>！[s与p的差别][二级指针和字符串数组和命令行参数/test1.png]</p>
+<p><img src="/2019/02/18/二级指针和字符串数组和命令行参数/test1.png" alt></p>
 <p>有了上面的铺垫，我们来正是探讨二维数组：</p>
 <p><img src="/2019/02/18/二级指针和字符串数组和命令行参数/test2.png" alt></p>
 <p>如果要给ar3的第二个元素赋值<code>*(*(p+2)+1)</code>，相当于<code>p[2][1]</code>，也是相当于这么写<code>*(p[2]+1)</code></p>
