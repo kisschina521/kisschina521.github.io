@@ -111,13 +111,10 @@
 <meta property="og:site_name" content="Celtics_Super_Fan">
 <meta property="og:description" content="进程和程序进程是一个可执行程序的实例，下面引用《Linux系统管理手册中》的一段话： 程序是包含了一系列信息的文件，这些信息描述了如何在运行时创建一个进程，所包括的内容如下： 1. 二进制格式标识 2. 机器语言指令 3. 程序入口地址：标识程序开始执行时的起始指令地址 4. 数据：程序文件包含的变量初始值和程序使用的字面常量值（字符串） 5. 符号表及重定位表：描述程序中函数和变量的位置及名称，">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://kisschina521.github.io/fork函数浅析(一">
-<meta property="og:image" content="https://kisschina521.github.io/2019/03/10/fork函数浅析（一）/Users/李飞飞/AppData/Roaming/Typora/typora-user-images/1552207749833.png">
-<meta property="og:updated_time" content="2019-03-10T08:49:23.805Z">
+<meta property="og:updated_time" content="2019-03-10T08:51:03.982Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fork函数浅析（一）">
 <meta name="twitter:description" content="进程和程序进程是一个可执行程序的实例，下面引用《Linux系统管理手册中》的一段话： 程序是包含了一系列信息的文件，这些信息描述了如何在运行时创建一个进程，所包括的内容如下： 1. 二进制格式标识 2. 机器语言指令 3. 程序入口地址：标识程序开始执行时的起始指令地址 4. 数据：程序文件包含的变量初始值和程序使用的字面常量值（字符串） 5. 符号表及重定位表：描述程序中函数和变量的位置及名称，">
-<meta name="twitter:image" content="https://kisschina521.github.io/fork函数浅析(一">
 
 
 
@@ -416,7 +413,7 @@
                 
               
 
-              <time title="创建时间：2019-03-10 14:26:33 / 修改时间：16:49:23" itemprop="dateCreated datePublished" datetime="2019-03-10T14:26:33+08:00">2019-03-10</time>
+              <time title="创建时间：2019-03-10 14:26:33 / 修改时间：16:51:03" itemprop="dateCreated datePublished" datetime="2019-03-10T14:26:33+08:00">2019-03-10</time>
             
 
             
@@ -467,7 +464,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">544</span>
+                <span title="本文字数">531</span>
               
 
               
@@ -512,8 +509,6 @@
 7. 其他信息
 </code></pre><p>可以用一个程序来创建许多进程，或者可以反过来说，许多进程运行的可以是同一程序</p>
 <p>所以现在重新给出进程的定义：进程是由内核定义的抽象的实体，并为该实体分配用以执行程序的各项系统资源，从内核角度来看，进程由用户内存空间和一系列内核数据结构组成，其中用户内存包含了程序代码及代码所使用的变量，而内核数据结构则用于维护进程状态信息。记录在内核数据结构中的信息包括许多与进程相关的标识号、虚拟内存表、打开文件的描述符表、信号传递及处理的有关信息、进程资源使用及限制、当前工作目录和大量的其他信息。</p>
-<p><img src="/fork函数浅析(一" alt>/fork1.jpg)</p>
-<p><img src="/2019/03/10/fork函数浅析（一）/Users\李飞飞\AppData\Roaming\Typora\typora-user-images\1552207749833.png" alt="1552207749833"></p>
 
       
     </div>
