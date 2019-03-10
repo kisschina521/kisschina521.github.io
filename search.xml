@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[进程操作浅析（一）]]></title>
+    <url>%2F2019%2F03%2F10%2F%E8%BF%9B%E7%A8%8B%E6%93%8D%E4%BD%9C%E6%B5%85%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[fork函数浅析（一）]]></title>
+    <url>%2F2019%2F03%2F10%2Ffork%E5%87%BD%E6%95%B0%E6%B5%85%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89%2F</url>
+    <content type="text"><![CDATA[进程和程序进程是一个可执行程序的实例，下面引用《Linux系统管理手册中》的一段话： 程序是包含了一系列信息的文件，这些信息描述了如何在运行时创建一个进程，所包括的内容如下： 1. 二进制格式标识 2. 机器语言指令 3. 程序入口地址：标识程序开始执行时的起始指令地址 4. 数据：程序文件包含的变量初始值和程序使用的字面常量值（字符串） 5. 符号表及重定位表：描述程序中函数和变量的位置及名称，可以用来调试和运行时的符号解析（链接） 6. 共享库和动态链接信息：程序文件所包含的一些字段，列出了程序运行时需要的共享库，以及加载共享库的动态链接器的路径名 7. 其他信息 可以用一个程序来创建许多进程，或者可以反过来说，许多进程运行的可以是同一程序 所以现在重新给出进程的定义：进程是由内核定义的抽象的实体，并为该实体分配用以执行程序的各项系统资源，从内核角度来看，进程由用户内存空间和一系列内核数据结构组成，其中用户内存包含了程序代码及代码所使用的变量，而内核数据结构则用于维护进程状态信息。记录在内核数据结构中的信息包括许多与进程相关的标识号、虚拟内存表、打开文件的描述符表、信号传递及处理的有关信息、进程资源使用及限制、当前工作目录和大量的其他信息。 /fork1.jpg)]]></content>
+      <categories>
+        <category>Linux系统编程</category>
+      </categories>
+      <tags>
+        <tag>Linux系统调用 C/C++</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[数据和指令]]></title>
     <url>%2F2019%2F03%2F10%2F%E6%95%B0%E6%8D%AE%E5%92%8C%E6%8C%87%E4%BB%A4%2F</url>
     <content type="text"><![CDATA[123456789101112131415161718int data1 = 10;int data2 = 0;int data3;static int data4 = 11;static int data5 = 0;static int data6;int main(char argc, char* argv[])&#123; int a = 12; int b = 0; int c; static int e = 13; static int f = 0; static int g; return 0;&#125; 现在思考上面的代码，哪些是指令，哪些是数据呢？ data1，data4，e放在数据段，data2，3，5，6，f，g放在 .bss 段，剩下都是指令放在.text段， .bss放未初始化的全局变量和静态c变量，以及所有被初始化为0的全局或静态变量，在目标文件中.bss不占实际的空间数据放的就是已初始化的全局变量和静态变量，这部分详细的内容，笔者决定学习深入理解计算机系统之后写一篇博客讨论。 下面我们来看看一个函数调用会发生什么事情 12345678910111213#include &lt;stdio.h&gt;int sum(int a, int b)&#123; int temp; temp = a + b; return temp;&#125;int main()&#123; int a = 10; int b = 20; int c = sum(a,b); return 0;&#125; 1234567891011121314159: int a = 10;00401078 mov dword ptr [ebp-4],0Ah10: int b = 20;0040107F mov dword ptr [ebp-8],14h;以上两句在开辟a，b的空间11: int c = sum(a,b);;然后开始执行这句我们看看发生了什么？00401086 mov eax,dword ptr [ebp-8];把b的值给eax，然后把eax压栈，由此可以看出，函数调用是从右向左压栈00401089 push eax0040108A mov ecx,dword ptr [ebp-4]0040108D push ecx0040108E call @ILT+10(add) (0040100f);重点就是这个call指令，他先保存了下一条指令add的地址，为了将来函数调用完成之后可以继续执行下一条00401093 add esp,8 123456789101112131415161718192021222324252627282930312: int sum(int a, int b)&#123;;一个函数的调用首先会把ebp的值压栈，因为你栈帧回退的时候，你要回到调用者函数的入口00401020 push ebp00401021 mov ebp,esp ;mov指令把esp的值给ebp，这样ebp就成了被调用函数的栈底指针00401023 sub esp,44h ;sub指令把esp的值减44h，等于为被调用的sum函数开辟了44h的空间大小00401026 push ebx00401027 push esi00401028 push edi;接下来的操作就是在对这个空间的值进行初始化，可以看到全部赋值为0CCCCCCCCh00401029 lea edi,[ebp-44h]0040102C mov ecx,11h00401031 mov eax,0CCCCCCCCh00401036 rep stos dword ptr [edi]3: int temp;4: temp = a + b;00401038 mov eax,dword ptr [ebp+8]0040103B add eax,dword ptr [ebp+0Ch]0040103E mov dword ptr [ebp-4],eax5: return temp;00401041 mov eax,dword ptr [ebp-4]6: &#125;;我们来看下栈帧回退的过程00401044 pop edi00401045 pop esi00401046 pop ebx00401047 mov esp,ebp;很粗暴，直接把ebp的值给了esp00401049 pop ebp;pop指令把ebp现在指向的值赋给了ebp，现在ebp指向的值就是main函数栈底地址，所以自然回去了0040104A ret;最后的最后执行了add esp,8，还是很粗暴的方法，由此产生了一个问题？ 123456int *Get(int a)&#123; int value = 10; return &amp;value;&#125;int *p = Get(NULL);/*打印*p会不会成功呢，答案是会的，从上面的汇编指令可以看出来，你这个并没有释放空间，只是粗暴的把ebp的值给了esp*/]]></content>
