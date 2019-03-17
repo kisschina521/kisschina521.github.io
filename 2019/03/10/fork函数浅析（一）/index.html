@@ -111,12 +111,10 @@
 <meta property="og:site_name" content="Celtics_Super_Fan">
 <meta property="og:description" content="进程和程序进程是一个可执行程序的实例，下面引用《Linux系统管理手册中》的一段话： 程序是包含了一系列信息的文件，这些信息描述了如何在运行时创建一个进程，所包括的内容如下： 1. 二进制格式标识 2. 机器语言指令 3. 程序入口地址：标识程序开始执行时的起始指令地址 4. 数据：程序文件包含的变量初始值和程序使用的字面常量值（字符串） 5. 符号表及重定位表：描述程序中函数和变量的位置及名称，">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://kisschina521.github.io/2019/03/10/fork函数浅析（一）/fork函数浅析(一">
-<meta property="og:updated_time" content="2019-03-10T08:56:23.370Z">
+<meta property="og:updated_time" content="2019-03-13T10:46:12.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fork函数浅析（一）">
 <meta name="twitter:description" content="进程和程序进程是一个可执行程序的实例，下面引用《Linux系统管理手册中》的一段话： 程序是包含了一系列信息的文件，这些信息描述了如何在运行时创建一个进程，所包括的内容如下： 1. 二进制格式标识 2. 机器语言指令 3. 程序入口地址：标识程序开始执行时的起始指令地址 4. 数据：程序文件包含的变量初始值和程序使用的字面常量值（字符串） 5. 符号表及重定位表：描述程序中函数和变量的位置及名称，">
-<meta name="twitter:image" content="https://kisschina521.github.io/2019/03/10/fork函数浅析（一）/fork函数浅析(一">
 
 
 
@@ -415,12 +413,24 @@
                 
               
 
-              <time title="创建时间：2019-03-10 14:26:33 / 修改时间：16:56:23" itemprop="dateCreated datePublished" datetime="2019-03-10T14:26:33+08:00">2019-03-10</time>
+              <time title="创建时间：2019-03-10 14:26:33" itemprop="dateCreated datePublished" datetime="2019-03-10T14:26:33+08:00">2019-03-10</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-13 18:46:12" itemprop="dateModified" datetime="2019-03-13T18:46:12+08:00">2019-03-13</time>
               
             
           </span>
@@ -466,7 +476,7 @@
                 
                   <span class="post-meta-item-text">本文字数：</span>
                 
-                <span title="本文字数">551</span>
+                <span title="本文字数">999</span>
               
 
               
@@ -511,7 +521,9 @@
 7. 其他信息
 </code></pre><p>可以用一个程序来创建许多进程，或者可以反过来说，许多进程运行的可以是同一程序</p>
 <p>所以现在重新给出进程的定义：进程是由内核定义的抽象的实体，并为该实体分配用以执行程序的各项系统资源，从内核角度来看，进程由用户内存空间和一系列内核数据结构组成，其中用户内存包含了程序代码及代码所使用的变量，而内核数据结构则用于维护进程状态信息。记录在内核数据结构中的信息包括许多与进程相关的标识号、虚拟内存表、打开文件的描述符表、信号传递及处理的有关信息、进程资源使用及限制、当前工作目录和大量的其他信息。</p>
-<p><img src="/2019/03/10/fork函数浅析（一）/fork函数浅析(一" alt="1552207985567">/1552207985567.png)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="keyword">pid_t</span> getpid(<span class="keyword">void</span>);<span class="comment">//得到调用进程id</span></span><br><span class="line"><span class="keyword">pid_t</span> getppid(<span class="keyword">void</span>);<span class="comment">//得到父进程id</span></span><br><span class="line"><span class="keyword">uid_t</span> getuid(<span class="keyword">void</span>);<span class="comment">//得到进程的实际用户id</span></span><br><span class="line"><span class="keyword">uid_t</span> geteuid(<span class="keyword">void</span>);<span class="comment">//调用进程的有效用户id</span></span><br><span class="line"><span class="keyword">gid_t</span> getgid(<span class="keyword">void</span>);<span class="comment">//调用进程的实际组id</span></span><br><span class="line"><span class="keyword">gid_t</span> getegid(<span class="keyword">void</span>);<span class="comment">//调用进程的有效组id</span></span><br></pre></td></tr></table></figure>
+<p>如果子进程的父进程终止，子进程会变成孤儿进程，init进程随机收养该进程</p>
+<h3 id="函数fork"><a href="#函数fork" class="headerlink" title="函数fork"></a>函数fork</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;unishd.h&gt;</span><br><span class="line">pid_t fork(void);</span><br><span class="line">/*fork函数被调用一次，但返回两次，子进程返回值是0，父进程返回值是子进程的id，理由是一个进程的子进程有很多，并且没有一个函数使一个进程可以获得所有子进程的进程id，子进程返回0的原因，一个进程只有一个父进程，子进程总可以用getppid得到父进程id，id0总是作为内核交换进程使用，所以子进程id不可能为0*/</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -632,7 +644,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -651,7 +663,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">3</span>
+                      
+                    
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -666,7 +680,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                    <span class="site-state-item-count">2</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -749,7 +765,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程和程序"><span class="nav-number">1.</span> <span class="nav-text">进程和程序</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程和程序"><span class="nav-number">1.</span> <span class="nav-text">进程和程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数fork"><span class="nav-number">2.</span> <span class="nav-text">函数fork</span></a></li></ol></div>
             
 
           </div>
@@ -788,7 +804,7 @@
       <i class="fa fa-area-chart"></i>
     </span>
     
-    <span title="站点总字数">5k</span>
+    <span title="站点总字数">13k</span>
   
 
   
@@ -797,7 +813,7 @@
       <i class="fa fa-coffee"></i>
     </span>
     
-    <span title="站点阅读时长">4 分钟</span>
+    <span title="站点阅读时长">12 分钟</span>
   
 </div>
 
